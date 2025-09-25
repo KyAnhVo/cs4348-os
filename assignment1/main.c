@@ -1,3 +1,4 @@
+#include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -8,8 +9,11 @@
 #include <dirent.h>     // dir manager
 
 // Error codes
-#define PIPE_CREATE_ERR 1
-#define FORK_ERR 2
+#define PIPE_CREATE_ERR     1
+#define FORK_ERR            2
+#define DIR_OPEN_ERR        3
+#define DIR_READ_ERR        4
+#define 
 
 void create_pipes(int**, int**);
 void main_flow(int*, int*, char*);
@@ -92,6 +96,12 @@ void main_flow(int* send_pipe, int* recv_pipe, char* dir) {
     // just to be safe
     close(send_pipe[1]);
     close(recv_pipe[0]);
+
+
 }
 
-void 
+int read_dir_file(int* file_count, struct dirent** contents, char* dir_name) {
+    DIR * dir = opendir(dir_name);
+    
+    return 0;
+}
