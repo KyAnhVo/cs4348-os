@@ -6,18 +6,14 @@
 #include <dirent.h>
 #include <sys/types.h>
 
-struct file_metadata {
-    char    name[NAME_MAX];
-    ino_t   serial_num;
-};
 
-typedef struct dirent_lst {
-    struct file_metadata** lst;
+typedef struct filename_lst {
+    char ** lst;
     int capacity;
     int size;
-} dirent_lst;
+} filename_lst;
 
-dirent_lst * create_dirent_lst();
-int append(dirent_lst *, struct dirent *);
+filename_lst* create_filename_lst();
+int append(filename_lst *, struct dirent *);
 
 #endif
