@@ -1,0 +1,7 @@
+#/bin/bash
+
+rm -rf ./t1 ./t2
+mkdir t1 t2
+touch t1/a t2/b
+echo "a" >> t1/a
+echo "b" >> t2/b

@@ -2,7 +2,6 @@
 #include <linux/limits.h>
 #include <stdlib.h>
 #include <dirent.h>
-#include <errno.h>
 #include <string.h>
 #include <limits.h>
 
@@ -10,27 +9,54 @@
 
 
 filename_lst * create_filename_lst() {
-    filename_lst * tmp = malloc(sizeof(filename_lst));
+    filename_lst * tmp = (filename_lst*) malloc(sizeof(filename_lst));
     tmp->size = 0;
     tmp->capacity = 8;
-    tmp->lst = malloc(sizeof(char*) * tmp->capacity);
+    tmp->lst = malloc(sizeof(filename*) * tmp->capacity);
     return tmp;
 }
 
-int append(filename_lst * lst, struct dirent * val) {
-    char * tmp = malloc(sizeof(char) * (NAME_MAX + 1));
-    strcpy(tmp, val->d_name);
-    if (lst->capacity > lst->size) {
-        lst->lst[lst->size] = tmp;
-        lst->size++;
-    }
-    else {
-        char** tmp_lst = realloc(lst->lst, lst->capacity * 2);
-        if (tmp_lst == NULL) return -1;
-        lst->lst = tmp_lst;
+int append_from_dirent(filename_lst * lst, struct dirent * entry) {
+    if (lst->capacity == lst->size) {
         lst->capacity *= 2;
-        lst->lst[lst->size] = tmp;
-        lst->size++;
+        lst->lst = (filename**) realloc(lst->lst, sizeof(filename*) * lst->capacity);
     }
+
+    // populate new filename
+    filename * f = (filename*) malloc(sizeof(*f));
+    f->file_name = (char*) malloc(NAME_MAX + 1);
+    memcpy(f->file_name, entry->d_name, NAME_MAX + 1);
+    
+    // append filename in lst->lst
+    lst->lst[lst->size] = f;
+    lst->size++;
+
     return 0;
+}
+
+int append(filename_lst * lst, char* entry) {
+    if (lst->capacity == lst->size) {
+        lst->capacity *= 2;
+        lst->lst = (filename**) realloc(lst->lst, sizeof(filename*) * lst->capacity);
+    }
+    
+    // populate new filename
+    filename * f = (filename*) malloc(sizeof(*f));
+    f->file_name = (char*) malloc(NAME_MAX + 1);
+    memcpy(f->file_name, entry, NAME_MAX + 1);
+
+    // append filename in lst->lst
+    lst->lst[lst->size] = f;
+    lst->size++;
+
+    return 0;
+}
+
+void free_filename_lst(filename_lst* lst) {
+    for (int i = 0; i < lst->size; i++) {
+        free(lst->lst[i]->file_name);
+        free(lst->lst[i]);
+    }
+    free(lst->lst);
+    free(lst);
 }

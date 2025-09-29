@@ -6,14 +6,19 @@
 #include <dirent.h>
 #include <sys/types.h>
 
+typedef struct filename {
+    char * file_name;
+} filename;
 
 typedef struct filename_lst {
-    char ** lst;
+    filename** lst;
     int capacity;
     int size;
 } filename_lst;
 
 filename_lst* create_filename_lst();
-int append(filename_lst *, struct dirent *);
+int append_from_dirent(filename_lst *, struct dirent *);
+int append(filename_lst *, char *);
+void free_filename_lst(filename_lst *);
 
 #endif
