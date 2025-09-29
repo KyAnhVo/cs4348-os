@@ -2,6 +2,10 @@
 
 rm -rf ./t1 ./t2
 mkdir t1 t2
-touch t1/a t2/b
+touch t1/a t1/b t1/c t2/e t2/f t2/d
 echo "a" >> t1/a
-echo "b" >> t2/b
+echo "b" >> t1/b
+echo "c" >> t1/c
+echo "d" >> t2/d
+echo "e" >> t2/e
+echo "f" >> t2/f

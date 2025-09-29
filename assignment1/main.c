@@ -122,8 +122,7 @@ void child_main_flow(int* send_pipe, int* recv_pipe, char* dir, int child_id) {
         for (int i = 0; i < this_filenames->size; i++) {
             char file_path[PATH_MAX + 1];
             snprintf(file_path, sizeof(file_path), "%s/%s", dir, this_filenames->lst[i]->file_name);
-            printf("%s\n", file_path);
-            write_file_content_to_pipe(this_filenames->lst[i]->file_name, send_pipe);
+            write_file_content_to_pipe(file_path, send_pipe);
         }
         for (int i = 0; i < other_filenames->size; i++) {
             char file_path[PATH_MAX + 1];
@@ -142,8 +141,7 @@ void child_main_flow(int* send_pipe, int* recv_pipe, char* dir, int child_id) {
         for (int i = 0; i < this_filenames->size; i++) {
             char file_path[PATH_MAX + 1];
             snprintf(file_path, sizeof(file_path), "%s/%s", dir, this_filenames->lst[i]->file_name);
-            printf("%s\n", file_path);
-            write_file_content_to_pipe(this_filenames->lst[i]->file_name, send_pipe);
+            write_file_content_to_pipe(file_path, send_pipe);
         }
     }
 
@@ -207,7 +205,7 @@ void write_file_content_to_pipe(char* filename, int* send_pipe) {
         write(send_pipe[1], &read_len, 4);
         if (read_len == 0)
             break;
-        write(send_pipe[1], msg, read_len);
+        write_entirely(send_pipe, msg, read_len);
     } while (1);
 }
 
@@ -231,8 +229,7 @@ void read_file_content_from_pipe(char * filename, int * recv_pipe) {
         read(recv_pipe[0], &read_len, sizeof(int));
         if (read_len == 0)
             break;
-        read(recv_pipe[0], msg, read_len);
-        printf("%s\n", msg);
+        read_entirely(recv_pipe, msg, read_len);
         fwrite(msg, 1, read_len, file);
     } while(1);
 }
