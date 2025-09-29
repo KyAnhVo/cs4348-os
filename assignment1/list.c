@@ -1,3 +1,8 @@
+/**
+ * Ky Anh Vo
+ * CS4348_HON
+ * Fall 2025
+ */
 #include <asm-generic/errno-base.h>
 #include <linux/limits.h>
 #include <stdlib.h>
@@ -7,7 +12,7 @@
 
 #include "list.h"
 
-
+// create a list, let it have some capacity
 filename_lst * create_filename_lst() {
     filename_lst * tmp = (filename_lst*) malloc(sizeof(filename_lst));
     tmp->size = 0;
@@ -16,6 +21,7 @@ filename_lst * create_filename_lst() {
     return tmp;
 }
 
+// the usual double cap when filled implementation of list, but from dirent
 int append_from_dirent(filename_lst * lst, struct dirent * entry) {
     if (lst->capacity == lst->size) {
         lst->capacity *= 2;
@@ -34,6 +40,7 @@ int append_from_dirent(filename_lst * lst, struct dirent * entry) {
     return 0;
 }
 
+// this one uses name only
 int append(filename_lst * lst, char* entry) {
     if (lst->capacity == lst->size) {
         lst->capacity *= 2;

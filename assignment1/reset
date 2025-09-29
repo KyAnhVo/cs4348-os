@@ -1,11 +1,53 @@
-#/bin/bash
+#!/bin/bash
 
 rm -rf ./t1 ./t2
 mkdir t1 t2
-touch t1/a t1/b t1/c t2/e t2/f t2/d
-echo "a" >> t1/a
-echo "b" >> t1/b
-echo "c" >> t1/c
-echo "d" >> t2/d
-echo "e" >> t2/e
-echo "f" >> t2/f
+
+# Directory 1 files - interesting content
+cat > t1/a << 'EOF'
+The quick brown fox jumps over the lazy dog. This sentence contains every letter of the alphabet!
+Testing pipe communication between processes is actually pretty fun when it works correctly.
+Make sure to check that every single byte is transferred properly, including newlines and special chars: !@#$%
+EOF
+
+cat > t1/b << 'EOF'
+In 1969, humans landed on the moon for the first time. Neil Armstrong's famous words were:
+"That's one small step for man, one giant leap for mankind."
+Meanwhile, your code is taking one small step to transfer files between directories using pipes!
+This is a multi-line file with exactly 347 bytes of interesting content to test your implementation thoroughly.
+EOF
+
+cat > t1/c << 'EOF'
+Fun fact: The first computer bug was an actual bug - a moth trapped in a Harvard Mark II computer in 1947.
+Grace Hopper taped it to the logbook with the note "First actual case of bug being found."
+Now you're debugging code that moves files between directories. Much less sticky than dealing with moths!
+Your implementation better handle files of various sizes without losing any data. Even this rambling text.
+EOF
+
+cat > t2/d << 'EOF'
+Did you know? The average person spends about 6 months of their lifetime waiting for red lights to turn green.
+You've probably spent that much time debugging this assignment already! Just kidding... maybe.
+Pipes are a fundamental IPC mechanism in Unix. They're unidirectional byte streams, which is why you need two pipes for bidirectional communication.
+This file tests whether your code can handle longer paragraphs and punctuation marks correctly!!!
+EOF
+
+cat > t2/e << 'EOF'
+Recipe for debugging success:
+1. Read the assignment carefully (2 cups)
+2. Write clean, modular code (3 tablespoons)
+3. Add comprehensive error checking (1 teaspoon)
+4. Test with various file sizes (mix thoroughly)
+5. Check for edge cases like empty files (garnish)
+6. Submit before the deadline (serve immediately at 11:59 PM)
+
+Serves: One satisfied student who passes the assignment
+EOF
+
+cat > t2/f << 'EOF'
+The Lorem Ipsum of CS assignments: "Hello World"
+But we're beyond that now. We're synchronizing entire directory structures using fork(), pipes, and IPC!
+This content has numbers (42, 1337, 9001), symbols (&, *, @, #), and even unicode if your terminal supports it: café
+Testing, testing, 1-2-3. If you can read this in both directories after running your program, congratulations!
+Your implementation successfully transferred $(wc -c < t2/f) bytes without corruption.
+EOF
+

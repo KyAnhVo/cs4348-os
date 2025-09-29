@@ -1,3 +1,8 @@
+/**
+ * Ky Anh Vo
+ * CS4348_HON
+ * Fall 2025
+ */
 #ifndef LIST_H
 #define LIST_H
 
@@ -5,6 +10,8 @@
 #include <stdlib.h>
 #include <dirent.h>
 #include <sys/types.h>
+
+// essentially a vector, arraylist, ...
 
 typedef struct filename {
     char * file_name;

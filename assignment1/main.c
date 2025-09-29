@@ -1,3 +1,8 @@
+/**
+ * Ky Anh Vo
+ * CS4348_HON
+ * Fall 2025
+ */
 #include "list.h"
 
 #include <string.h>
@@ -36,6 +41,8 @@ void read_file_content_from_pipe(char *, int *);
 int main(int argc, char** argv) {
     int * pipe_c1_to_c2, * pipe_c2_to_c1;
     pid_t child1, child2;
+    
+    // typical create pipes, then create 2 children (halt if any fails)
 
     create_pipes(&pipe_c1_to_c2, &pipe_c2_to_c1);
     if (pipe_c1_to_c2 == NULL) {
@@ -115,7 +122,9 @@ void child_main_flow(int* send_pipe, int* recv_pipe, char* dir, int child_id) {
     filename_lst * this_filenames = create_filename_lst();
     filename_lst * other_filenames = create_filename_lst();
     read_dir_file(dir, this_filenames);
-
+    
+    // essentially read names, then for each file read content and populate the files.
+    // First child sends then recvs, second child recvs then sends.
     if (child_id == FIRST_CHILD) {
         write_dir_to_pipe(this_filenames, send_pipe);
         read_dir_from_pipe(other_filenames, recv_pipe);
@@ -145,9 +154,13 @@ void child_main_flow(int* send_pipe, int* recv_pipe, char* dir, int child_id) {
         }
     }
 
-
+    free_filename_lst(this_filenames);
+    free_filename_lst(other_filenames);
+    close(send_pipe[1]);
+    close(recv_pipe[0]);
 }
 
+// read the directoies and construct the filenames_lst
 void read_dir_file(char* dir_name, filename_lst * filenames) {
     errno = 0;
     DIR * dir = opendir(dir_name);
@@ -157,13 +170,15 @@ void read_dir_file(char* dir_name, filename_lst * filenames) {
             continue;
         append_from_dirent(filenames, curr_file);
     }
-
+    
+    // did forget to use these, but for safety so...
     if (errno != 0)
         errno = DIR_READ_ERR;
     else
         errno = OK;
 }
 
+// should be self explanatory?
 void write_dir_to_pipe(filename_lst * filenames, int * send_pipe) {
     write(send_pipe[1], &(filenames->size), sizeof(int));
     for (int i = 0; i < filenames->size; i++) {
@@ -183,6 +198,8 @@ void read_dir_from_pipe(filename_lst * filenames, int * recv_pipe) {
     }
 }
 
+
+// write sometimes doesnt suffice cause of some problems it does not read the whole thing.
 void write_entirely(int * send_pipe, void * buffer, int write_size) {
     int len_written = 0;
     while (len_written < write_size) {
@@ -190,6 +207,7 @@ void write_entirely(int * send_pipe, void * buffer, int write_size) {
         len_written += curr_written;
     }
 }
+
 
 void write_file_content_to_pipe(char* filename, int* send_pipe) {
     char msg[4096];
@@ -201,6 +219,8 @@ void write_file_content_to_pipe(char* filename, int* send_pipe) {
     }
 
     do {
+        // first 4 bytes: msg size. The rest: msg. If msg size == 0 then
+        // it is sign to halt.
         uint32_t read_len = fread(msg, 1, sizeof(msg), file);
         write(send_pipe[1], &read_len, 4);
         if (read_len == 0)
